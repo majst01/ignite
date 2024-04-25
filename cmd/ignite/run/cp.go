@@ -3,7 +3,6 @@ package run
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
 	"path"
@@ -270,7 +269,7 @@ func copyDirToVM(client *sftp.Client, localPath, remotePath string) error {
 	}
 
 	// Remove local source directory.
-	entries, err := ioutil.ReadDir(localPath)
+	entries, err := os.ReadDir(localPath)
 	if err != nil {
 		return err
 	}

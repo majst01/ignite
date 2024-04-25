@@ -2,7 +2,7 @@ package run
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	api "github.com/weaveworks/ignite/pkg/apis/ignite"
 	"github.com/weaveworks/ignite/pkg/config"
@@ -37,7 +37,7 @@ func Logs(lo *LogsOptions) error {
 	}
 
 	// Read the stream to a byte buffer
-	b, err := ioutil.ReadAll(rc)
+	b, err := io.ReadAll(rc)
 	if err != nil {
 		return err
 	}

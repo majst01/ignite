@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -66,12 +65,12 @@ func TestPullFromAuthRegistry(t *testing.T) {
 	defer os.Unsetenv(containerd.InsecureRegistriesEnvVar)
 
 	// Create a registry config directory to use in test.
-	emptyDir, err := ioutil.TempDir("", "ignite-test")
+	emptyDir, err := os.MkdirTemp("", "ignite-test")
 	assert.NilError(t, err)
 	defer os.RemoveAll(emptyDir)
 
 	// Create a registry config directory to use in test.
-	rcDir, err := ioutil.TempDir("", "ignite-test")
+	rcDir, err := os.MkdirTemp("", "ignite-test")
 	assert.NilError(t, err)
 	defer os.RemoveAll(rcDir)
 
@@ -180,7 +179,7 @@ spec:
 			// Write ignite config if provided.
 			var igniteConfigPath string
 			if len(rt.igniteConfig) > 0 {
-				igniteFile, err := ioutil.TempFile("", "ignite-config-file-test")
+				igniteFile, err := os.CreateTemp("", "ignite-config-file-test")
 				if err != nil {
 					t.Fatalf("failed to create a file: %v", err)
 				}

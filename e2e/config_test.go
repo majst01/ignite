@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -138,7 +137,7 @@ spec:
 		rt := rt
 		t.Run(rt.name, func(t *testing.T) {
 			// Create config file.
-			file, err := ioutil.TempFile("", "ignite-config-file-test")
+			file, err := os.CreateTemp("", "ignite-config-file-test")
 			if err != nil {
 				t.Fatalf("failed to create a file: %v", err)
 			}
@@ -153,7 +152,7 @@ spec:
 
 			if len(rt.vmConfig) > 0 {
 				// Create a VM config file.
-				vmConfigFile, err := ioutil.TempFile("", "ignite-vm-config")
+				vmConfigFile, err := os.CreateTemp("", "ignite-vm-config")
 				if err != nil {
 					t.Fatalf("failed to create a file: %v", err)
 				}

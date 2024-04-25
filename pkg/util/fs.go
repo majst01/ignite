@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/otiai10/copy"
@@ -90,7 +89,7 @@ type MountPoint struct {
 }
 
 func Mount(volume string) (*MountPoint, error) {
-	tempDir, err := ioutil.TempDir("", "")
+	tempDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		return nil, err
 	}
@@ -140,11 +139,11 @@ func FileIsEmpty(file string) (bool, error) {
 }
 
 // WriteFileIfChanged stores a sha of data at <filename>.sha256 and determines whether to
-// rewrite the file; it has the same signature as ioutil.WriteFile().
+// rewrite the file; it has the same signature as os.WriteFile().
 func WriteFileIfChanged(filename string, data []byte, perm os.FileMode) error {
 	shaFile := filename + ".sha256"
 
-	currentHashBytes, err := ioutil.ReadFile(shaFile)
+	currentHashBytes, err := os.ReadFile(shaFile)
 	currentHashStr := string(currentHashBytes)
 	if err != nil && !os.IsNotExist(err) {
 		return err
@@ -155,7 +154,7 @@ func WriteFileIfChanged(filename string, data []byte, perm os.FileMode) error {
 
 	if newHashStr != currentHashStr {
 		log.Debugf("Writing %q with new hash: %q, old hash: %q", filename, newHashStr, currentHashStr)
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			shaFile,
 			[]byte(newHashStr),
 			perm,
@@ -163,7 +162,7 @@ func WriteFileIfChanged(filename string, data []byte, perm os.FileMode) error {
 		if err != nil {
 			return err
 		}
-		return ioutil.WriteFile(
+		return os.WriteFile(
 			filename,
 			data,
 			perm,

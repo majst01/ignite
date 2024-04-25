@@ -1,7 +1,7 @@
 package logs
 
 import (
-	"io/ioutil"
+	"io"
 	golog "log"
 	"os"
 
@@ -41,7 +41,7 @@ func init() {
 
 	// Set the output to be stdout in the normal case, but discard all log output in quiet mode
 	if Quiet {
-		Logger.SetOutput(ioutil.Discard)
+		Logger.SetOutput(io.Discard)
 	} else {
 		Logger.SetOutput(os.Stdout)
 	}

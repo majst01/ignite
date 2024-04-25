@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -43,7 +42,7 @@ status:
   running: true
 `)
 	vmConfigPath := filepath.Join(constants.MANIFEST_DIR, "test-vm.yaml")
-	assert.Check(t, ioutil.WriteFile(vmConfigPath, vmConfig, 0644), "failed to write VM config")
+	assert.Check(t, os.WriteFile(vmConfigPath, vmConfig, 0644), "failed to write VM config")
 	defer func() {
 		assert.NilError(t, os.RemoveAll(vmConfigPath))
 	}()

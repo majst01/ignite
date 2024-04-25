@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"io"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/lithammer/dedent"
@@ -68,7 +68,7 @@ func NewCmdGitOps(out io.Writer) *cobra.Command {
 				log.Tracef("Parsed identity file path: %s", f.identityFile)
 				util.GenericCheckErr(err)
 
-				opts.IdentityFileContent, err = ioutil.ReadFile(f.identityFile)
+				opts.IdentityFileContent, err = os.ReadFile(f.identityFile)
 				util.GenericCheckErr(err)
 			}
 			if f.hostsFile != "" {
@@ -78,7 +78,7 @@ func NewCmdGitOps(out io.Writer) *cobra.Command {
 				log.Tracef("Parsed_known hosts file path: %s", f.hostsFile)
 				util.GenericCheckErr(err)
 
-				opts.KnownHostsFileContent, err = ioutil.ReadFile(f.hostsFile)
+				opts.KnownHostsFileContent, err = os.ReadFile(f.hostsFile)
 				util.GenericCheckErr(err)
 			}
 			if f.username != "" {

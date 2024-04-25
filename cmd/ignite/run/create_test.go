@@ -3,7 +3,6 @@ package run
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
@@ -24,10 +23,11 @@ import (
 )
 
 // Update the golden files with:
-//   go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestApplyVMConfigFile -update
+//
+//	go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestApplyVMConfigFile -update
 func TestApplyVMConfigFile(t *testing.T) {
 	// Setup storage backend.
-	dir, err := ioutil.TempDir("", "ignite")
+	dir, err := os.MkdirTemp("", "ignite")
 	if err != nil {
 		t.Fatalf("failed to create storage for ignite: %v", err)
 	}
@@ -156,13 +156,13 @@ func TestApplyVMConfigFile(t *testing.T) {
 				// Update the golden file if needed.
 				if *update {
 					t.Logf("updating golden file %s", goldenFilePath)
-					if err := ioutil.WriteFile(goldenFilePath, newVMBytes, 0644); err != nil {
+					if err := os.WriteFile(goldenFilePath, newVMBytes, 0644); err != nil {
 						t.Fatalf("failed to update apply-vm-config golden file: %s: %v", goldenFilePath, err)
 					}
 				}
 
 				// Read golden file.
-				wantOutput, err := ioutil.ReadFile(goldenFilePath)
+				wantOutput, err := os.ReadFile(goldenFilePath)
 				if err != nil {
 					t.Fatalf("failed to read apply-vm-config golden file: %s: %v", goldenFilePath, err)
 				}
@@ -371,7 +371,7 @@ func TestNewCreateOptions(t *testing.T) {
 	for _, rt := range tests {
 		t.Run(rt.name, func(t *testing.T) {
 			// Setup storage backend.
-			dir, err := ioutil.TempDir("", "ignite")
+			dir, err := os.MkdirTemp("", "ignite")
 			if err != nil {
 				t.Fatalf("failed to create storage for ignite: %v", err)
 			}

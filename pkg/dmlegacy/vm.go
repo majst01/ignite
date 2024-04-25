@@ -2,7 +2,6 @@ package dmlegacy
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 	"net"
 	"os"
@@ -192,12 +191,12 @@ func writeEtcHosts(tmpDir, hostname string, primaryIP net.IP) error {
 	}
 
 	content := []byte(fmt.Sprintf(hostsFileTmpl, primaryIP.String(), hostname))
-	return ioutil.WriteFile(hostFilePath, content, 0644)
+	return os.WriteFile(hostFilePath, content, 0644)
 }
 
 func writeEtcHostname(tmpDir, hostname string) error {
 	hostnameFilePath := filepath.Join(tmpDir, "/etc/hostname")
-	return ioutil.WriteFile(hostnameFilePath, []byte(hostname), 0644)
+	return os.WriteFile(hostnameFilePath, []byte(hostname), 0644)
 }
 
 // Generate a new SSH keypair for the vm

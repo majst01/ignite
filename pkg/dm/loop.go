@@ -2,7 +2,7 @@ package dm
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 	"strconv"
 
@@ -43,7 +43,7 @@ func (ld *loopDevice) active() bool {
 }
 
 func (ld *loopDevice) SizeSectors() (uint64, error) {
-	data, err := ioutil.ReadFile(path.Join("/sys/class/block", path.Base(ld.Device.Path()), "size"))
+	data, err := os.ReadFile(path.Join("/sys/class/block", path.Base(ld.Device.Path()), "size"))
 	if err != nil {
 		return 0, err
 	}

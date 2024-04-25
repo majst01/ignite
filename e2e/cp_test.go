@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -69,7 +68,7 @@ func TestCopyFileFromHostToVM(t *testing.T) {
 	for _, rt := range cases {
 		t.Run(rt.name, func(t *testing.T) {
 			// Create a file.
-			file, err := ioutil.TempFile("", "ignite-cp-test")
+			file, err := os.CreateTemp("", "ignite-cp-test")
 			if err != nil {
 				t.Fatalf("failed to create a file: %v", err)
 			}
@@ -97,7 +96,7 @@ func TestCopyFileFromHostToVM(t *testing.T) {
 
 func TestCopySymlinkedFileFromHostToVM(t *testing.T) {
 	// Create a file.
-	file, err := ioutil.TempFile("", "ignite-symlink-cp-test")
+	file, err := os.CreateTemp("", "ignite-symlink-cp-test")
 	if err != nil {
 		t.Fatalf("failed to create a file: %v", err)
 	}
@@ -166,7 +165,7 @@ func TestCopyFileFromVMToHost(t *testing.T) {
 		Run()
 	defer os.Remove(hostFilePath)
 
-	hostContent, err := ioutil.ReadFile(hostFilePath)
+	hostContent, err := os.ReadFile(hostFilePath)
 	if err != nil {
 		t.Errorf("failed to read host file content: %v", err)
 	}
@@ -183,14 +182,14 @@ func TestCopyDirectoryFromHostToVM(t *testing.T) {
 	assert.Assert(t, e2eHome != "", "IGNITE_E2E_HOME should be set")
 
 	// Create a temporary directory on host.
-	dir, err := ioutil.TempDir("", "ignite-cp-dir-test")
+	dir, err := os.MkdirTemp("", "ignite-cp-dir-test")
 	if err != nil {
 		t.Fatalf("failed to create a directory: %v", err)
 	}
 	defer os.RemoveAll(dir)
 
 	// Create a file in the directory.
-	file, err := ioutil.TempFile(dir, "ignite-cp-file")
+	file, err := os.CreateTemp(dir, "ignite-cp-file")
 	if err != nil {
 		t.Fatalf("failed to create a file: %v", err)
 	}
@@ -297,7 +296,7 @@ func TestCopyDirectoryFromVMToHost(t *testing.T) {
 	}
 
 	// Check the content of the file inside the copied directory.
-	hostContent, err := ioutil.ReadFile(filePath)
+	hostContent, err := os.ReadFile(filePath)
 	if err != nil {
 		t.Errorf("failed to read host file %q content: %v", filePath, err)
 	}

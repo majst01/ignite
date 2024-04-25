@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,7 +16,8 @@ import (
 var update = flag.Bool("update", false, "update inspect output golden files")
 
 // Update the golden files with:
-//   go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestInspect -update
+//
+//	go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestInspect -update
 func TestInspect(t *testing.T) {
 	cases := []struct {
 		name         string
@@ -81,7 +81,7 @@ func TestInspect(t *testing.T) {
 			// Update the golden file if needed.
 			if !rt.err && *update {
 				t.Log("update inspect golden files")
-				if err := ioutil.WriteFile(goldenFilePath, buf.Bytes(), 0644); err != nil {
+				if err := os.WriteFile(goldenFilePath, buf.Bytes(), 0644); err != nil {
 					t.Fatalf("failed to update inspect golden file: %s: %v", goldenFilePath, err)
 				}
 			}
@@ -89,7 +89,7 @@ func TestInspect(t *testing.T) {
 			// Check output only when no error is expected.
 			if !rt.err {
 				// Read golden file.
-				wantOutput, err := ioutil.ReadFile(goldenFilePath)
+				wantOutput, err := os.ReadFile(goldenFilePath)
 				if err != nil {
 					t.Fatalf("failed to read inspect golden file: %s: %v", goldenFilePath, err)
 				}

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -82,7 +81,8 @@ func createTestVM(name, id string) (*api.VM, error) {
 }
 
 // Update the golden files with:
-//   go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestPs -update
+//
+//	go test -v github.com/weaveworks/ignite/cmd/ignite/run -run TestPs -update
 func TestPs(t *testing.T) {
 	// Existing VMs with UID for deterministic results.
 	// A sorted list of VMs. The VM list returned by the VM filter is sorted by
@@ -154,13 +154,13 @@ func TestPs(t *testing.T) {
 			// Update the golden file if needed.
 			if *update {
 				t.Log("update ps golden files")
-				if err := ioutil.WriteFile(goldenFilePath, buf.Bytes(), 0644); err != nil {
+				if err := os.WriteFile(goldenFilePath, buf.Bytes(), 0644); err != nil {
 					t.Fatalf("failed to update ps golden file: %s: %v", goldenFilePath, err)
 				}
 			}
 
 			// Read golden file.
-			wantOutput, err := ioutil.ReadFile(goldenFilePath)
+			wantOutput, err := os.ReadFile(goldenFilePath)
 			if err != nil {
 				t.Fatalf("failed to read ps golden file: %s: %v", goldenFilePath, err)
 			}

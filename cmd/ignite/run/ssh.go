@@ -2,7 +2,6 @@ package run
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"path"
@@ -177,7 +176,7 @@ func runSSH(vm *api.VM, privKeyFile string, command []string, tty bool, timeout 
 }
 
 func newSignerForKey(keyPath string) (ssh.Signer, error) {
-	key, err := ioutil.ReadFile(keyPath)
+	key, err := os.ReadFile(keyPath)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read private key: %v", err)
 	}

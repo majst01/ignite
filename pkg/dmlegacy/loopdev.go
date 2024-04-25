@@ -2,7 +2,7 @@ package dmlegacy
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
 	"path"
 	"strconv"
@@ -25,7 +25,7 @@ func newLoopDev(file string, readOnly bool) (*loopDevice, error) {
 }
 
 func (ld *loopDevice) Size512K() (uint64, error) {
-	data, err := ioutil.ReadFile(path.Join("/sys/class/block", path.Base(ld.Device.Path()), "size"))
+	data, err := os.ReadFile(path.Join("/sys/class/block", path.Base(ld.Device.Path()), "size"))
 	if err != nil {
 		return 0, err
 	}

@@ -1,7 +1,6 @@
 package metadata
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -99,7 +98,7 @@ func TestVerifyUIDOrName(t *testing.T) {
 	for _, rt := range cases {
 		t.Run(rt.name, func(t *testing.T) {
 			// Create storage.
-			dir, err := ioutil.TempDir("", "ignite")
+			dir, err := os.MkdirTemp("", "ignite")
 			if err != nil {
 				t.Fatalf("failed to create storage for ignite: %v", err)
 			}

@@ -3,7 +3,6 @@ package cni
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"path"
@@ -159,7 +158,7 @@ func (plugin *cniNetworkPlugin) SetupContainerNetwork(containerid string, portMa
 func (plugin *cniNetworkPlugin) initialize() (err error) {
 	// If there's no existing CNI configuration, write ignite's example config to the CNI directory
 	if util.DirEmpty(CNIConfDir) {
-		if err = ioutil.WriteFile(path.Join(CNIConfDir, defaultCNIConfFilename), []byte(defaultCNIConf), constants.DATA_DIR_FILE_PERM); err != nil {
+		if err = os.WriteFile(path.Join(CNIConfDir, defaultCNIConfFilename), []byte(defaultCNIConf), constants.DATA_DIR_FILE_PERM); err != nil {
 			return
 		}
 	}

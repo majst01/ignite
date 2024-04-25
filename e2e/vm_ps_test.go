@@ -2,7 +2,7 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -53,7 +53,7 @@ func TestVMpsWithOutdatedStatus(t *testing.T) {
 	vm.Status.Running = false
 	vmBytes, err := scheme.Serializer.EncodeJSON(vm)
 	assert.NilError(t, err)
-	assert.NilError(t, ioutil.WriteFile(metadata_path, vmBytes, 0644))
+	assert.NilError(t, os.WriteFile(metadata_path, vmBytes, 0644))
 
 	// Revert the false data for proper cleanup.
 	// NOTE: This is needed because ignite rm believes the VM manifest status
@@ -62,7 +62,7 @@ func TestVMpsWithOutdatedStatus(t *testing.T) {
 		vm.Status.Running = true
 		vmBytes, err = scheme.Serializer.EncodeJSON(vm)
 		assert.NilError(t, err)
-		assert.NilError(t, ioutil.WriteFile(metadata_path, vmBytes, 0644))
+		assert.NilError(t, os.WriteFile(metadata_path, vmBytes, 0644))
 	}()
 
 	// Run ps -a and look for the outdated status info.

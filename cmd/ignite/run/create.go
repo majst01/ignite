@@ -2,7 +2,7 @@ package run
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 
@@ -138,7 +138,7 @@ func (cf *CreateFlags) NewCreateOptions(args []string, fs *flag.FlagSet) (*Creat
 // applyVMConfigFile patches a given base VM with the VM config in a given
 // config file.
 func applyVMConfigFile(baseVM *api.VM, configFile string) error {
-	vmConfigBytes, err := ioutil.ReadFile(configFile)
+	vmConfigBytes, err := os.ReadFile(configFile)
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -304,7 +304,7 @@ func (cc *ctdClient) ExportImage(image meta.OCIImageRef) (r io.ReadCloser, clean
 	}
 
 	// Create a temporary directory to mount the view snapshot
-	if dir, err = ioutil.TempDir("", ""); err != nil {
+	if dir, err = os.MkdirTemp("", ""); err != nil {
 		return
 	}
 
@@ -314,8 +314,8 @@ func (cc *ctdClient) ExportImage(image meta.OCIImageRef) (r io.ReadCloser, clean
 	}
 
 	// Get the info of each entry in the mount
-	var infos []os.FileInfo
-	if infos, err = ioutil.ReadDir(dir); err != nil {
+	var infos []fs.DirEntry
+	if infos, err = os.ReadDir(dir); err != nil {
 		return
 	}
 

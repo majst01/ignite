@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -29,7 +28,7 @@ func TestRunGitops(t *testing.T) {
 	vmName := "my-vm"
 
 	// Create dir for git repo.
-	gitDir, err := ioutil.TempDir("", "ignite-gitops")
+	gitDir, err := os.MkdirTemp("", "ignite-gitops")
 	if err != nil {
 		t.Fatalf("failed to create git repo dir: %v", err)
 	}
@@ -41,7 +40,7 @@ func TestRunGitops(t *testing.T) {
 		Run()
 
 	// Clone this repo in a new dir.
-	cloneDir, err := ioutil.TempDir("", "ignite-gitops-clone")
+	cloneDir, err := os.MkdirTemp("", "ignite-gitops-clone")
 	if err != nil {
 		t.Fatalf("failed to create repo clone dir: %v", err)
 	}
@@ -82,7 +81,7 @@ status:
 `)
 
 	vmConfigPath := filepath.Join(cloneDir, "my-vm.yaml")
-	assert.Check(t, ioutil.WriteFile(vmConfigPath, vmConfig, 0644), "failed to write VM config")
+	assert.Check(t, os.WriteFile(vmConfigPath, vmConfig, 0644), "failed to write VM config")
 
 	gitCmd.New().
 		Dir(cloneDir).
