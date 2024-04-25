@@ -46,7 +46,7 @@ write_changelog() {
         # Build the gren image
         docker build -t ignite-relnotes hack/relnotes
 
-        # Push a temporary changlog-tag (we'll delete this)
+        # Push a temporary changelog-tag (we'll delete this)
         CHANGELOG_TAG="changelog-tmp-${FULL_VERSION}"
 
         echo "Tagging the current commit ${CHANGELOG_TAG} temporarily in order to run gren..."

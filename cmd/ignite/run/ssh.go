@@ -79,7 +79,7 @@ func runSSH(vm *api.VM, privKeyFile string, command []string, tty bool, timeout 
 	// Defer exit here and set the exit code based on any ssh error, so that
 	// this ssh command returns the correct ssh exit code. Since this function
 	// results in an os.Exit, any error returned by this function won't be
-	// received by the caller. Print the error to make the errror message
+	// received by the caller. Print the error to make the error message
 	// visible and set the error code when an error is found.
 	exitCode := 0
 	defer func() {
@@ -88,7 +88,7 @@ func runSSH(vm *api.VM, privKeyFile string, command []string, tty bool, timeout 
 
 	// printErrAndSetExitCode is used to print an error message, set exit code
 	// and return nil. This is needed because once the ssh connection is
-	// estabilish, to return the error code of the actual ssh session, instead
+	// establish, to return the error code of the actual ssh session, instead
 	// of returning an error, the runSSH function defers os.Exit with the ssh
 	// exit code. For showing any error to the user, it needs to be printed.
 	printErrAndSetExitCode := func(errMsg error, exitCode *int, code int) error {

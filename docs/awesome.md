@@ -1,7 +1,7 @@
 # awesome-ignite
 
 An [awesome](https://github.com/sindresorhus/awesome) list of interesting projects, blog posts and other resources
-using, mentioning or buidling on top of Ignite.
+using, mentioning or building on top of Ignite.
 
 **If you have created a blog post or similar resource related to Ignite, please send a PR to this list!**
 

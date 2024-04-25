@@ -151,7 +151,7 @@ _________________
 
 This release allows changing the internal id prefixes of VM components. This overcomes limitations /w CNI's like Weave net.
 A U/X improvement has been made to the VM list command to show when the container runtime state of the VM does not match what
-ignite has stored in the API objet.
+ignite has stored in the API object.
 
 New base OS images and kernels have been released with the GitHub Actions release tools.
 A [`k3s`](https://k3s.io/) OS image is now pushed for amd64.
@@ -1451,7 +1451,7 @@ We hope to see this trend continue, all help is very welcome to this community-d
 
  - Flannel is now usable with the Ignite kernel thanks to adding the VXLAN kernel module ([#154](https://github.com/weaveworks/ignite/pull/154), [@curx](https://github.com/curx))
  - HAProxy checking for Kubernetes API `/healthz` endpoint ([#156](https://github.com/weaveworks/ignite/pull/156), [@curx](https://github.com/curx))
- - Allow unmarshaling unquoted UIDs from JSON for convenience ([#178](https://github.com/weaveworks/ignite/pull/178), [@twelho](https://github.com/twelho))
+ - Allow unmarshalling unquoted UIDs from JSON for convenience ([#178](https://github.com/weaveworks/ignite/pull/178), [@twelho](https://github.com/twelho))
  - The VM images based on `Ubuntu`, `CentOS` and `Amazon Linux` can now be built on top of a specific release ([#193](https://github.com/weaveworks/ignite/pull/193), [@twelho](https://github.com/twelho))
 
 

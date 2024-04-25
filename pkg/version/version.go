@@ -22,12 +22,12 @@ var (
 	// allow overriding the DEFAULT_SANDBOX_IMAGE_* constants
 	sandboxImageName      = ""
 	sandboxImageTag       = ""
-	sandboxImageDelimeter = ":" // set to "@" to support using sha256:<hash> as a "tag"
+	sandboxImageDelimiter = ":" // set to "@" to support using sha256:<hash> as a "tag"
 
 	// allow overriding the DEFAULT_KERNEL_IMAGE_* constants
 	kernelImageName      = ""
 	kernelImageTag       = ""
-	kernelImageDelimeter = ":" // set to "@" to support using sha256:<hash> as a "tag"
+	kernelImageDelimiter = ":" // set to "@" to support using sha256:<hash> as a "tag"
 )
 
 // Image represents an OCI image
@@ -35,12 +35,12 @@ var (
 type Image struct {
 	Name      string `json:"name"`
 	Tag       string `json:"tag"`
-	Delimeter string `json:"delimeter"`
+	Delimiter string `json:"delimiter"`
 }
 
 // String returns Image{} as a human-friendly version string.
 func (image Image) String() string {
-	return fmt.Sprintf("%s%s%s", image.Name, image.Delimeter, image.Tag)
+	return fmt.Sprintf("%s%s%s", image.Name, image.Delimiter, image.Tag)
 }
 
 // Info stores information about a component's version
@@ -79,13 +79,13 @@ func GetIgnite() Info {
 		SandboxImage: Image{
 			Name:      constants.DEFAULT_SANDBOX_IMAGE_NAME,
 			Tag:       constants.DEFAULT_SANDBOX_IMAGE_TAG,
-			Delimeter: sandboxImageDelimeter,
+			Delimiter: sandboxImageDelimiter,
 		},
 
 		KernelImage: Image{
 			Name:      constants.DEFAULT_KERNEL_IMAGE_NAME,
 			Tag:       constants.DEFAULT_KERNEL_IMAGE_TAG,
-			Delimeter: kernelImageDelimeter,
+			Delimiter: kernelImageDelimiter,
 		},
 	}
 

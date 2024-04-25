@@ -216,7 +216,7 @@ func fetchLatestStatus(vms []*api.VM) (outdatedVMs map[string]bool, errList []er
 		}
 
 		// If current running status and the VM object status don't match, mark
-		// it as an outdated VM and update the VM object staus in memory.
+		// it as an outdated VM and update the VM object status in memory.
 		// NOTE: Avoid updating the VM manifest on disk here. That'll be
 		// indicated in the ps output.
 		if currentRunning != vm.Status.Running {

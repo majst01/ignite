@@ -108,7 +108,7 @@ func collectInterfaces(vmIntfs map[string]string) (bool, error) {
 
 		foundIntfs[intf.Name] = intf
 
-		// If the interface is explictly defined, no changes are needed
+		// If the interface is explicitly defined, no changes are needed
 		if _, ok := vmIntfs[intf.Name]; ok {
 			continue
 		}

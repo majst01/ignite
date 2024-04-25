@@ -117,7 +117,7 @@ func dialSuccess(vm *ignite.VM, seconds int) error {
 	}
 	if err != nil {
 		if err, ok := err.(*net.OpError); ok && err.Timeout() {
-			return fmt.Errorf("Tried connecting to SSH but timed out %s", err)
+			return fmt.Errorf("tried connecting to SSH but timed out %s", err)
 		}
 		return err
 	}
@@ -151,7 +151,7 @@ func waitForSSH(vm *ignite.VM, dialSeconds int, sshTimeout time.Duration) error 
 	sshConn, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		if strings.Contains(err.Error(), "unable to authenticate") {
-			// we connected to the ssh server and recieved the expected failure
+			// we connected to the ssh server and received the expected failure
 			return nil
 		}
 		return err

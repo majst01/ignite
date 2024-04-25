@@ -162,7 +162,7 @@ Starting a created `VM` is very straight forward:
 
 The `VM` will be matched by its name or ID (useful if there are similarly named `VMs`).
 
-If no error occured, your `VM` is now running.
+If no error occurred, your `VM` is now running.
 
 ## Inspecting VMs and their resources
 

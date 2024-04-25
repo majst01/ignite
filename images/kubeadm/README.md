@@ -16,7 +16,7 @@ This will create a kubeadm configuration file, generate the CA cert, give you a 
 
 ## Start the seed master
 
-For the bootstap master, copy over the CA cert and key to use, and the kubeadm config file:
+For the bootstrap master, copy over the CA cert and key to use, and the kubeadm config file:
 
 ```bash
 ignite run weaveworks/ignite-kubeadm:latest \
