@@ -35,7 +35,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
 	github.com/vishvananda/netlink v1.2.1-beta.2
-	github.com/weaveworks/libgitops v0.0.0-20200611103311-2c871bbbbf0c
+	github.com/weaveworks/libgitops v0.0.3
 	golang.org/x/crypto v0.22.0
 	golang.org/x/sys v0.19.0
 	golang.org/x/term v0.19.0
@@ -45,6 +45,8 @@ require (
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280
 	sigs.k8s.io/yaml v1.3.0
 )
+
+replace github.com/weaveworks/libgitops => github.com/weaveworks/libgitops v0.0.0-20200611103311-2c871bbbbf0c
 
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24 // indirect
@@ -134,11 +136,11 @@ require (
 	go.opentelemetry.io/otel v1.19.0 // indirect
 	go.opentelemetry.io/otel/metric v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
-	golang.org/x/mod v0.16.0 // indirect
-	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.19.0 // indirect
+	golang.org/x/tools v0.20.0 // indirect
 	google.golang.org/genproto v0.0.0-20240123012728-ef4313101c80 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
 	google.golang.org/grpc v1.62.0 // indirect
