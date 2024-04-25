@@ -34,7 +34,7 @@ CTR := $(DOCKER) run -i --rm \
 		ctr
 UID_GID?=$(shell id -u):$(shell id -g)
 FIRECRACKER_VERSION:=$(shell cat hack/FIRECRACKER_VERSION)
-GO_VERSION=1.17.9
+GO_VERSION=1.22.2
 DOCKER_USER?=weaveworks
 IMAGE=$(DOCKER_USER)/ignite
 GIT_VERSION:=$(shell DOCKER_USER=$(DOCKER_USER) hack/ldflags.sh --version-only)
@@ -60,12 +60,12 @@ QEMUVERSION=v4.2.0-6
 
 ifeq ($(GOARCH),amd64)
 QEMUARCH=amd64
-BASEIMAGE=alpine:3.13
+BASEIMAGE=alpine:3.19
 FIRECRACKER_ARCH_SUFFIX=-x86_64
 endif
 ifeq ($(GOARCH),arm64)
 QEMUARCH=aarch64
-BASEIMAGE=arm64v8/alpine:3.13
+BASEIMAGE=arm64v8/alpine:3.19
 FIRECRACKER_ARCH_SUFFIX=-aarch64
 endif
 
@@ -115,7 +115,7 @@ go-in-docker: # Do not use directly -- use $(GO_MAKE_TARGET)
 # Make make execute this target although the file already exists.
 .PHONY: bin/$(GOARCH)/ignite bin/$(GOARCH)/ignite-spawn bin/$(GOARCH)/ignited
 bin/$(GOARCH)/ignite bin/$(GOARCH)/ignited bin/$(GOARCH)/ignite-spawn: bin/$(GOARCH)/%:
-	CGO_ENABLED=0 GOARCH=$(GOARCH) go build -mod=vendor -ldflags "$(shell IGNITE_GIT_VERSION=$(GIT_VERSION) DOCKER_USER=$(DOCKER_USER) ./hack/ldflags.sh)" -o bin/$(GOARCH)/$* ./cmd/$*
+	CGO_ENABLED=0 GOARCH=$(GOARCH) go build -ldflags "$(shell IGNITE_GIT_VERSION=$(GIT_VERSION) DOCKER_USER=$(DOCKER_USER) ./hack/ldflags.sh)" -o bin/$(GOARCH)/$* ./cmd/$*
 ifeq ($(GOARCH),$(GOHOSTARCH))
 	ln -sf ./$(GOARCH)/$* bin/$*
 endif
@@ -185,14 +185,14 @@ tidy-in-docker:
 
 # Exclude e2e tests, incomplete package pkg/dm and packages that require root.
 test:
-	go test -mod=vendor -v $(shell go list ./... | grep -v /e2e | grep -v /pkg/dm | grep -v $(TEST_REQUIRES_ROOT_PACKAGES)) -count=$(TEST_COUNT)
+	go test -v $(shell go list ./... | grep -v /e2e | grep -v /pkg/dm | grep -v $(TEST_REQUIRES_ROOT_PACKAGES)) -count=$(TEST_COUNT)
 
 test-in-docker:
 	$(MAKE) go-make TARGETS="test"
 
 # Run tests that require root.
 root-test:
-	sudo -E $(shell which go) test -mod=vendor -v $(TEST_REQUIRES_ROOT_PACKAGES) -count=$(TEST_COUNT)
+	sudo -E $(shell which go) test -v $(TEST_REQUIRES_ROOT_PACKAGES) -count=$(TEST_COUNT)
 
 graph:
 	hack/graph.sh
@@ -226,23 +226,23 @@ go-autogen:
 	# Let the boilerplate be empty
 	touch /tmp/boilerplate
 
-	go run -mod=vendor ./vendor/k8s.io/code-generator/cmd/deepcopy-gen \
+	go run ./vendor/k8s.io/code-generator/cmd/deepcopy-gen \
 		--input-dirs ${API_DIRS} \
 		--bounding-dirs ${APIS_DIR} \
 		-O zz_generated.deepcopy \
 		-h /tmp/boilerplate 
 
-	go run -mod=vendor ./vendor/k8s.io/code-generator/cmd/defaulter-gen \
+	go run ./vendor/k8s.io/code-generator/cmd/defaulter-gen \
 		--input-dirs ${API_DIRS} \
 		-O zz_generated.defaults \
 		-h /tmp/boilerplate
 
-	go run -mod=vendor ./vendor/k8s.io/code-generator/cmd/conversion-gen \
+	go run ./vendor/k8s.io/code-generator/cmd/conversion-gen \
 		--input-dirs ${API_DIRS} \
 		-O zz_generated.conversion \
 		-h /tmp/boilerplate
 
-	go run -mod=vendor ./vendor/k8s.io/kube-openapi/cmd/openapi-gen \
+	go run ./vendor/k8s.io/kube-openapi/cmd/openapi-gen \
 		--input-dirs ${API_DIRS} \
 		--output-package ${PROJECT}/pkg/openapi \
 		--report-filename pkg/openapi/violations.txt \

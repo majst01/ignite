@@ -6,15 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"time"
 
 	refdocker "github.com/containerd/containerd/reference/docker"
 	"github.com/containerd/containerd/remotes/docker"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	cont "github.com/docker/docker/api/types/container"
+	"github.com/docker/cli/cli/config/types"
+
+	imagetypes "github.com/docker/docker/api/types/image"
+
+	containertypes "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
 	log "github.com/sirupsen/logrus"
@@ -54,7 +55,7 @@ func GetDockerClient() (*dockerClient, error) {
 func (dc *dockerClient) PullImage(image meta.OCIImageRef) (err error) {
 	var rc io.ReadCloser
 
-	opts := types.ImagePullOptions{}
+	opts := imagetypes.PullOptions{}
 
 	// Get the domain name from the image.
 	named, err := refdocker.ParseDockerRef(image.String())
@@ -91,7 +92,7 @@ func (dc *dockerClient) PullImage(image meta.OCIImageRef) (err error) {
 	if rc, err = dc.client.ImagePull(context.Background(), image.Normalized(), opts); err == nil {
 		// Don't output the pull command
 		defer util.DeferErr(&err, rc.Close)
-		_, err = io.Copy(ioutil.Discard, rc)
+		_, err = io.Copy(io.Discard, rc)
 	}
 
 	return
@@ -128,7 +129,7 @@ func (dc *dockerClient) InspectImage(image meta.OCIImageRef) (*runtime.ImageInsp
 }
 
 func (dc *dockerClient) ExportImage(image meta.OCIImageRef) (r io.ReadCloser, cleanup func() error, err error) {
-	config, err := dc.client.ContainerCreate(context.Background(), &container.Config{
+	config, err := dc.client.ContainerCreate(context.Background(), &containertypes.Config{
 		Cmd:   []string{"sh"}, // We need a temporary command, this doesn't need to exist in the image
 		Image: image.Normalized(),
 	}, nil, nil, nil, "")
@@ -179,9 +180,9 @@ func (dc *dockerClient) RunContainer(image meta.OCIImageRef, config *runtime.Con
 		binds = append(binds, fmt.Sprintf("%s:%s", bind.HostPath, bind.ContainerPath))
 	}
 
-	devices := make([]container.DeviceMapping, 0, len(config.Devices))
+	devices := make([]containertypes.DeviceMapping, 0, len(config.Devices))
 	for _, device := range config.Devices {
-		devices = append(devices, container.DeviceMapping{
+		devices = append(devices, containertypes.DeviceMapping{
 			PathOnHost:        device.HostPath,
 			PathInContainer:   device.ContainerPath,
 			CgroupPermissions: "rwm",
@@ -191,7 +192,7 @@ func (dc *dockerClient) RunContainer(image meta.OCIImageRef, config *runtime.Con
 	stopTimeout := int(config.StopTimeout)
 	bindings, exposed := portBindingsToDocker(config.PortBindings)
 
-	c, err := dc.client.ContainerCreate(context.Background(), &container.Config{
+	c, err := dc.client.ContainerCreate(context.Background(), &containertypes.Config{
 		Hostname:     config.Hostname,
 		ExposedPorts: exposed,
 		Tty:          true, // --tty
@@ -201,13 +202,13 @@ func (dc *dockerClient) RunContainer(image meta.OCIImageRef, config *runtime.Con
 		Labels:       config.Labels,
 		Env:          config.EnvVars,
 		StopTimeout:  &stopTimeout,
-	}, &container.HostConfig{
+	}, &containertypes.HostConfig{
 		Binds:        binds,
-		NetworkMode:  container.NetworkMode(config.NetworkMode),
+		NetworkMode:  containertypes.NetworkMode(config.NetworkMode),
 		PortBindings: bindings,
 		AutoRemove:   config.AutoRemove,
 		CapAdd:       config.CapAdds,
-		Resources: container.Resources{
+		Resources: containertypes.Resources{
 			Devices: devices,
 		},
 	}, nil, nil, name)
@@ -215,18 +216,19 @@ func (dc *dockerClient) RunContainer(image meta.OCIImageRef, config *runtime.Con
 		return "", err
 	}
 
-	return c.ID, dc.client.ContainerStart(context.Background(), c.ID, types.ContainerStartOptions{})
+	return c.ID, dc.client.ContainerStart(context.Background(), c.ID, containertypes.StartOptions{})
 }
 
 func (dc *dockerClient) StopContainer(container string, timeout *time.Duration) error {
 	// Start waiting before we do the stop, to avoid race
 	errC, readyC := make(chan error), make(chan struct{})
 	go func() {
-		errC <- dc.waitForContainer(container, cont.WaitConditionNotRunning, &readyC)
+		errC <- dc.waitForContainer(container, containertypes.WaitConditionNotRunning, &readyC)
 	}()
 	<-readyC // wait until removal detection has started
 
-	if err := dc.client.ContainerStop(context.Background(), container, timeout); err != nil {
+	timeoutSeconds := int(timeout.Seconds())
+	if err := dc.client.ContainerStop(context.Background(), container, containertypes.StopOptions{Timeout: &timeoutSeconds}); err != nil {
 		// If the container is not found, return nil, no-op.
 		if errdefs.IsNotFound(err) {
 			log.Warn(err)
@@ -243,7 +245,7 @@ func (dc *dockerClient) KillContainer(container, signal string) error {
 	// Start waiting before we do the kill, to avoid race
 	errC, readyC := make(chan error), make(chan struct{})
 	go func() {
-		errC <- dc.waitForContainer(container, cont.WaitConditionNotRunning, &readyC)
+		errC <- dc.waitForContainer(container, containertypes.WaitConditionNotRunning, &readyC)
 	}()
 	<-readyC // wait until removal detection has started
 
@@ -267,11 +269,11 @@ func (dc *dockerClient) RemoveContainer(container string) error {
 	errC := make(chan error)
 	readyC := make(chan struct{})
 	go func() {
-		errC <- dc.waitForContainer(container, cont.WaitConditionRemoved, &readyC)
+		errC <- dc.waitForContainer(container, containertypes.WaitConditionRemoved, &readyC)
 	}()
 
 	<-readyC // The ready channel is used to wait until removal detection has started
-	if err := dc.client.ContainerRemove(context.Background(), container, types.ContainerRemoveOptions{}); err != nil {
+	if err := dc.client.ContainerRemove(context.Background(), container, containertypes.RemoveOptions{}); err != nil {
 		// If the container is not found, return nil, no-op.
 		if errdefs.IsNotFound(err) {
 			log.Warn(err)
@@ -285,7 +287,7 @@ func (dc *dockerClient) RemoveContainer(container string) error {
 }
 
 func (dc *dockerClient) ContainerLogs(container string) (io.ReadCloser, error) {
-	return dc.client.ContainerLogs(context.Background(), container, types.ContainerLogsOptions{
+	return dc.client.ContainerLogs(context.Background(), container, containertypes.LogsOptions{
 		ShowStdout: true, // We only need stdout, as TTY mode merges stderr into it
 	})
 }
@@ -302,7 +304,7 @@ func (dc *dockerClient) PreflightChecker() preflight.Checker {
 	return checkers.NewExistingFileChecker(dcSocket)
 }
 
-func (dc *dockerClient) waitForContainer(container string, condition cont.WaitCondition, readyC *chan struct{}) error {
+func (dc *dockerClient) waitForContainer(container string, condition containertypes.WaitCondition, readyC *chan struct{}) error {
 	resultC, errC := dc.client.ContainerWait(context.Background(), container, condition)
 
 	// The ready channel can be used to wait until
