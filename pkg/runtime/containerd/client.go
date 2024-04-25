@@ -89,12 +89,12 @@ func StatContainerdSocket() (string, error) {
 			return socket, nil
 		}
 	}
-	return "", fmt.Errorf("Could not stat a containerd socket: %v", containerdSocketLocations)
+	return "", fmt.Errorf("could not stat a containerd socket: %v", containerdSocketLocations)
 }
 
 // getNewestAvailableContainerdRuntime returns the newest possible runtime for the shims available in the PATH.
 // If no shim is found, the legacy Linux V1 runtime is returned along with an error.
-// Use of this function couples ignite to the PATH and mount namespace of containerd which is undesireable.
+// Use of this function couples ignite to the PATH and mount namespace of containerd which is undesirable.
 //
 // TODO(stealthybox): PR CheckRuntime() to containerd libraries instead of using exec.LookPath()
 func getNewestAvailableContainerdRuntime() (string, error) {
@@ -175,7 +175,7 @@ func newRemoteResolver(refHostname string, configPath string) (remotes.Resolver,
 		// Allow the dockerconfig.json to specify HTTP as a specific protocol override, defaults to HTTPS
 		if strings.HasPrefix(serverAddress, "http://") {
 			if !insecureAllowed {
-				return nil, fmt.Errorf("Registry %q uses plain HTTP, but is not in the %s env var", serverAddress, InsecureRegistriesEnvVar)
+				return nil, fmt.Errorf("registry %q uses plain HTTP, but is not in the %s env var", serverAddress, InsecureRegistriesEnvVar)
 			}
 			regOpts = append(regOpts, docker.WithPlainHTTP(docker.MatchAllHosts))
 		} else {

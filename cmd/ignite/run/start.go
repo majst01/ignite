@@ -73,7 +73,7 @@ func Start(so *StartOptions, fs *flag.FlagSet) error {
 		return err
 	}
 
-	ignoredPreflightErrors := sets.NewString(util.ToLower(so.StartFlags.IgnoredPreflightErrors)...)
+	ignoredPreflightErrors := sets.New(util.ToLower(so.StartFlags.IgnoredPreflightErrors)...)
 	if err := checkers.StartCmdChecks(so.vm, ignoredPreflightErrors); err != nil {
 		return err
 	}

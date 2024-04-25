@@ -174,7 +174,7 @@ func (plugin *cniNetworkPlugin) initialize() (err error) {
 	return
 }
 
-func cniToIgniteResult(r *gocni.CNIResult) *network.Result {
+func cniToIgniteResult(r *gocni.Result) *network.Result {
 	result := &network.Result{}
 	for _, iface := range r.Interfaces {
 		for _, i := range iface.IPConfigs {

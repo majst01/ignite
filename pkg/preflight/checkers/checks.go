@@ -95,7 +95,7 @@ func (bipc BinInPathChecker) Type() string {
 	return "BinaryInPath"
 }
 
-func StartCmdChecks(vm *api.VM, ignoredPreflightErrors sets.String) error {
+func StartCmdChecks(vm *api.VM, ignoredPreflightErrors sets.Set[string]) error {
 	checks := []preflight.Checker{}
 	for _, dependency := range constants.PathDependencies {
 		checks = append(checks, ExistingFileChecker{filePath: dependency})
@@ -128,7 +128,7 @@ func StartCmdChecks(vm *api.VM, ignoredPreflightErrors sets.String) error {
 	return runChecks(checks, ignoredPreflightErrors)
 }
 
-func runChecks(checks []preflight.Checker, ignoredPreflightErrors sets.String) error {
+func runChecks(checks []preflight.Checker, ignoredPreflightErrors sets.Set[string]) error {
 	var errBuffer bytes.Buffer
 
 	for _, check := range checks {
@@ -150,6 +150,6 @@ func runChecks(checks []preflight.Checker, ignoredPreflightErrors sets.String) e
 	return nil
 }
 
-func isIgnoredPreflightError(ignoredPreflightError sets.String, checkType string) bool {
+func isIgnoredPreflightError(ignoredPreflightError sets.Set[string], checkType string) bool {
 	return ignoredPreflightError.Has("all") || ignoredPreflightError.Has(strings.ToLower(checkType))
 }

@@ -52,7 +52,7 @@ func TestRunChecks(t *testing.T) {
 		},
 	}
 	for _, utest := range utests {
-		ignoredErrors := sets.NewString(utest.ignoredErrors...)
+		ignoredErrors := sets.New(utest.ignoredErrors...)
 		err := runChecks(utest.checkers, ignoredErrors)
 		assert.Equal(t, utest.expectedError, (err != nil))
 	}
@@ -110,7 +110,7 @@ func TestIsIgnoredPreflightError(t *testing.T) {
 
 	for _, utest := range utests {
 		t.Run(utest.name, func(t *testing.T) {
-			ignoredErrors := sets.NewString(utest.ignoredErrors...)
+			ignoredErrors := sets.New(utest.ignoredErrors...)
 			isIgnored := isIgnoredPreflightError(ignoredErrors, utest.searchedError)
 			assert.Equal(t, utest.expectedResponse, isIgnored)
 		})
